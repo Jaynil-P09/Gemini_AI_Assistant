@@ -23,6 +23,7 @@ from mem0 import MemoryClient
 import json
 import sounddevice as sd
 
+#Get the audio device it will use
 try:
     default_input = sd.default.device[0]
     print(f"Using audio input device: {default_input}")
@@ -30,16 +31,17 @@ except:
     default_input = 0
     print(f"Using fallback audio device: {default_input}")
 
-#client = MemoryClient(api_key="m0-eSgfxb7z6Ij8XZEW9WfNJd3SiscaD4sHe7FFCLpV")
-
+#Defining the AI agent
 class Assistant(Agent):
     def __init__(self, user_id: str) -> None:
         super().__init__(
+            #The AI instructions and voice setting
             instructions=AGENT_INSTRUCTION,
             llm=google.beta.realtime.RealtimeModel(
                 voice="Aoede",
                 temperature=0.8,
             ),
+            #Tools list
             tools=[
                 get_weather,
                 search_web,
@@ -55,6 +57,7 @@ class Assistant(Agent):
         )
         self.user_id = user_id
 
+#Connect to Live Kit servers to either access in a playground or the console
 async def entrypoint(ctx: agents.JobContext):
     metadata = json.loads(ctx.job.metadata) if ctx.job.metadata else {}
     user_id = metadata.get("user_id", ctx.room.name)
@@ -65,6 +68,7 @@ async def entrypoint(ctx: agents.JobContext):
         room=ctx.room,
         agent=Assistant(user_id=user_id),
         room_input_options=RoomInputOptions(
+            #Turn video on for the live kit playground if it is used
             video_enabled=True,
             noise_cancellation=noise_cancellation.BVC(),
         ),
@@ -72,11 +76,10 @@ async def entrypoint(ctx: agents.JobContext):
 
     await ctx.connect()
 
+    #Give the instructions from prompts
     await session.generate_reply(
         instructions=SESSION_INSTRUCTION,
     )
-
+#Initialise the room
 if __name__ == "__main__":
     agents.cli.run_app(agents.WorkerOptions(entrypoint_fnc=entrypoint))
-
-    #to run in terminal jst use python .\agent.py console
