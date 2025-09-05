@@ -2,7 +2,7 @@
 A program that utilises livekit and a Gemini api to create a simple voice assistant which can be modified by adding custom tools or commands, as well as modify the voice assistants personality and voice, which can run either on livekit cloud or inside of a console.
 
 ## Installation and Usage:
-**1. You will need to start by installing a few libraries**
+**1. You will need to start by installing a few libraries, it is recommended to do this inside of a venv**
 
 ```ruby
 pip install dotenv livekit livekit-agents livekit-plugins-openai livekit-plugins-silero livekit-plugins-google livekit-plugins-noise-cancellationmgoogle-search-results langchain_community python_dotenv duckduckgo-search google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
@@ -130,7 +130,43 @@ async def entrypoint(ctx: agents.JobContext):
 
 if __name__ == "__main__":
     agents.cli.run_app(agents.WorkerOptions(entrypoint_fnc=entrypoint))
-
-    #to run in terminal jst use python .\agent.py console
 ```
 **This will give you a basic AI voice assistant with no other tools or functions**
+```ruby
+**To run it you can do one of two things**
+#to run in terminal use 
+python agent.py console
+#to run in a live-kit playground
+python agent.py dev
+```
+
+## Adding Tools(Optional)
+**If you weren't satisfied witha basic voice assistant like me this is how you can add tools so you can add some custom functionality to your voice assistance**
+
+**1. First create a new tools.py file in your project where you will make all of your tools**
+
+**2. Then go to the Google Cloud project Console for the AI and open it and go to API's & Services and search through and decide which ones you want to turn on**
+
+**3. Then go into OAuth consent screena nd create one for all of your new services and don't forget to turn on access to the email account you want to use**
+
+**4. Then create the tools you want to use you can see mine in the tools.py in this repo**
+
+**5. Then finally to test your new tools change your agent.py to include your new tools**
+```ruby
+def __init__(self, user_id: str) -> None:
+        super().__init__(
+            instructions=AGENT_INSTRUCTION,
+            llm=google.beta.realtime.RealtimeModel(
+                voice="Aoede",
+                temperature=0.8,
+            ),
+            tools=[
+            <Your tools>
+            ],
+        )
+        self.user_id = user_id
+```
+**The first time you use any of the tools it will open a access verification page where you will have to login but only a one-time login as it will be saved in a .pickle file if it is called again**
+
+
+**If there are any problems please leave a comment on this Repo**
