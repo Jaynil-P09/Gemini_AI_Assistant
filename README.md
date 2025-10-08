@@ -168,5 +168,6 @@ def __init__(self, user_id: str) -> None:
 ```
 **The first time you use any of the tools it will open a access verification page where you will have to login but only a one-time login as it will be saved in a .pickle file if it is called again**
 
+**Note: The code is from the Livekit Documentation except for the tools which I made**
 
 **If there are any problems please leave a comment on this Repo**
