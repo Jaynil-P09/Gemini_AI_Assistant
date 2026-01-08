@@ -12,7 +12,7 @@ winget install LiveKit.LiveKitCLI
 ```ruby
 lk cloud auth
 ```
-**3. Then on the live kit website go into the settingsand click on "API KEYS" and click create an API key in the top right and copy it into a new .env file**
+**3. Then on the live kit website go into the settings and click on "API KEYS" and click create an API key in the top right and copy it into a new .env file**
 ```ruby
 #It should look like this right now
 LIVEKIT_URL=<Your Live Kit URL>
